@@ -1,0 +1,17 @@
+#!/bin/bash
+
+STORAGE="/cygdrive/e/Educational dump/udemy-rips/"
+
+cd "$STORAGE"
+select FOLDER in * "Exit Script";
+do
+  case $FOLDER in
+      "Exit Script")
+          echo "Script exiting gracefully.";break
+          ;;
+       *)
+         echo "$FOLDER"
+          ;;
+  esac
+done
+
