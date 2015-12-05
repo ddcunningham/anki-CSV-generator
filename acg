@@ -1,6 +1,7 @@
-#!/bin/bash
+#!/bin/bash 
 
 STORAGE="/cygdrive/e/Educational dump/udemy-rips"
+ANKISTORAGE="/cygdrive/e/AnkiMedia/User 1/collection.media"
 SAVEIFS=$IFS
 IFS=$(echo -en "\n\b")
 
@@ -8,22 +9,22 @@ IFS=$(echo -en "\n\b")
 cd "$STORAGE"
 select COURSE in $(find "$STORAGE" -type d -and ! -iname "ankicsv" -and ! -iname "udemy-rips" -printf "%f\n") "Exit Script";
 do
-CSVNAME="$STORAGE/ankicsv/$COURSE.csv"
-echo "$CSVNAME"
+CSVNAME="$ANKISTORAGE/ankicsv/$COURSE.csv"
   case $COURSE in
       "Exit Script")
           echo "Script exiting gracefully.";break
           ;;
        *)
          if [[ -f "$CSVNAME" && -s "$CSVNAME" ]]; then
-		echo "$CSVNAME already exists and has content.  Terminating program."; exit 1
+		echo "$CSVNAME already exists and has content.  Terminating program."; less "$CSVNAME"; exit 1
 	 else 
 		touch "$CSVNAME"
-		echo "derp!" > "$CSVNAME" 
+		cd "$COURSE"
+		for each in $(find -type f -printf "%f\n"); do echo "$each;[sound:$each]" >> "$CSVNAME"; cp -v "$each" "$ANKISTORAGE/$each"; done
 	 fi
           ;;
   esac
 done
 
-IFS=$SAVEIFS
 
+IFS=$SAVEIFS
