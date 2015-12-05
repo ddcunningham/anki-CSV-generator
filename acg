@@ -6,23 +6,30 @@ SAVEIFS=$IFS
 IFS=$(echo -en "\n\b")
 
 
+mediamenu(){
 cd "$STORAGE"
-select COURSE in $(find "$STORAGE" -type d -and ! -iname "ankicsv" -and ! -iname "udemy-rips" -printf "%f\n") "Exit Script";
+echo "Type \"list\" or \"quit\" to do either at any time."
+select COURSE in $(find "$STORAGE" -type d -and ! -iname "ankicsv" -and ! -iname "udemy-rips" -printf "%f\n" | sort) "Exit Script";
 do
 CSVNAME="$ANKISTORAGE/ankicsv/$COURSE.csv"
   case $COURSE in
       "Exit Script")
-          echo "Script exiting gracefully.";break
+          echo "Script exiting gracefully."; exit 0
           ;;
        *)
-         if [[ -f "$CSVNAME" && -s "$CSVNAME" ]]; then
+	 if [[ $REPLY == "list" ]] ; then
+		clear; mediamenu
+	 elif [[ $REPLY == "quit" ]] ; then
+          	echo "Script exiting gracefully."; exit 0
+         elif [[ -f "$CSVNAME" && -s "$CSVNAME" ]]; then
 		echo "$CSVNAME already exists and has content.  Terminating program."; less "$CSVNAME"; exit 1
 	 else 
 		touch "$CSVNAME"
 		cd "$COURSE"
 #tee hee titname
 		for each in $(find -type f -printf "%f\n"); do titname=$(echo "$each" | awk -F "=" '{print $2}'); echo "$titname;[sound:$each]" >> "$CSVNAME"; cp -v "$each" "$ANKISTORAGE/$each"; done
-		sort "$CSVNAME" > tempcsv; mv tempcsv "$CSVNAME"
+		sort "$CSVNAME" > tempcsv; mv tempcsv "$CSVNAME"; echo "Generated file: $CSVNAME"
+		clear; mediamenu
 	 fi
           ;;
   esac
@@ -30,3 +37,6 @@ done
 
 
 IFS=$SAVEIFS
+}
+clear
+mediamenu
