@@ -1,17 +1,29 @@
 #!/bin/bash
 
-STORAGE="/cygdrive/e/Educational dump/udemy-rips/"
+STORAGE="/cygdrive/e/Educational dump/udemy-rips"
+SAVEIFS=$IFS
+IFS=$(echo -en "\n\b")
+
 
 cd "$STORAGE"
-select FOLDER in * "Exit Script";
+select COURSE in $(find "$STORAGE" -type d -and ! -iname "ankicsv" -and ! -iname "udemy-rips" -printf "%f\n") "Exit Script";
 do
-  case $FOLDER in
+CSVNAME="$STORAGE/ankicsv/$COURSE.csv"
+echo "$CSVNAME"
+  case $COURSE in
       "Exit Script")
           echo "Script exiting gracefully.";break
           ;;
        *)
-         echo "$FOLDER"
+         if [[ -f "$CSVNAME" && -s "$CSVNAME" ]]; then
+		echo "$CSVNAME already exists and has content.  Terminating program."; exit 1
+	 else 
+		touch "$CSVNAME"
+		echo "derp!" > "$CSVNAME" 
+	 fi
           ;;
   esac
 done
+
+IFS=$SAVEIFS
 
