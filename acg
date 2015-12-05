@@ -20,7 +20,9 @@ CSVNAME="$ANKISTORAGE/ankicsv/$COURSE.csv"
 	 else 
 		touch "$CSVNAME"
 		cd "$COURSE"
-		for each in $(find -type f -printf "%f\n"); do echo "$each;[sound:$each]" >> "$CSVNAME"; cp -v "$each" "$ANKISTORAGE/$each"; done
+#tee hee titname
+		for each in $(find -type f -printf "%f\n"); do titname=$(echo "$each" | awk -F "=" '{print $2}'); echo "$titname;[sound:$each]" >> "$CSVNAME"; cp -v "$each" "$ANKISTORAGE/$each"; done
+		sort "$CSVNAME" > tempcsv; mv tempcsv "$CSVNAME"
 	 fi
           ;;
   esac
