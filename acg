@@ -27,9 +27,10 @@ CSVNAME="$ANKISTORAGE/ankicsv/$COURSE.csv"
 		clear; mediamenu
 	 else 
 		touch $CSVNAME
+		mkdir $ANKISTORAGE/$COURSE; 
 		cd "$COURSE"
 #tee hee titname
-		for each in $(find -type f -printf "%f\n"); do titname=$(echo "$each" | awk -F "=" '{gsub("2XSPEED-","",$1); print $1"-"$2}'); hashprint=$(echo $COURSE | md5sum | cut -c 1,2,3,4); echo "$titname($hashprint);[sound:./$COURSE/$each]" >> "$CSVNAME"; mkdir $ANKISTORAGE/$COURSE; rsync -v "$each" "$ANKISTORAGE/$COURSE/$each"; done
+		for each in $(find -type f -printf "%f\n"); do titname=$(echo "$each" | awk -F "=" '{gsub("2XSPEED-","",$1); print $1"-"$2}'); hashprint=$(echo $COURSE | md5sum | cut -c 1,2,3,4); echo "$titname($hashprint);[sound:./$COURSE/$each]" >> "$CSVNAME"; rsync -v "$each" "$ANKISTORAGE/$COURSE/$each"; done
 		sort "$CSVNAME" > tempcsv 
 		mv tempcsv "$CSVNAME"
 		#ANKI ISN'T READY FOR THIS###awk 'BEGIN {for(i = 1; i <= 42; i++)printf "TESTFILE;"; printf "\n"}; {print $0}' tempcsv > $CSVNAME; echo -e "\n"; read -p "Generated file: $CSVNAME.  Press enter to review changes in editor."; $VISUAL "$CSVNAME" 
